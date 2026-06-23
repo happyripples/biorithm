@@ -112,20 +112,34 @@ canvas { display: block; width: 100%; }
 .card-sub { font-size: 0.78rem; color: var(--muted); margin-top: 4px; line-height: 1.5; }
 
 /* Tips */
-.tips-wrap {
-  background: var(--card); border: 1px solid var(--border);
-  border-radius: 18px; padding: 20px;
-}
-.tip {
-  display: flex; gap: 12px; align-items: flex-start;
-  padding: 12px 0; border-bottom: 1px solid var(--border);
-}
-.tip:first-child { padding-top: 0; }
-.tip:last-child  { border-bottom: none; padding-bottom: 0; }
-.tip-icon { font-size: 1.2rem; flex-shrink: 0; padding-top: 2px; }
-.tip-body { flex: 1; }
-.tip-text { font-size: 0.88rem; line-height: 1.7; }
-.tip-src  { font-size: 0.68rem; color: var(--muted); margin-top: 3px; }
+.tips-wrap { background:var(--card);border:1px solid var(--border);border-radius:18px;padding:20px; }
+.tip-headline { font-size:1.35rem;font-weight:700;line-height:1.3;margin-bottom:4px; }
+.tip-subline  { font-size:0.8rem;color:var(--muted);margin-bottom:16px;line-height:1.6; }
+.tip-chips    { display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px; }
+.tip-chip     { border-radius:12px;padding:10px 12px;display:flex;flex-direction:column;gap:2px; }
+.tip-chip-label { font-size:0.65rem;font-weight:700;letter-spacing:.04em;opacity:.7;text-transform:uppercase; }
+.tip-chip-val   { font-size:0.9rem;font-weight:700; }
+.chip-green  { background:rgba(52,211,153,.13);color:#34d399; }
+.chip-red    { background:rgba(239,68,68,.13);color:#ef4444; }
+.chip-yellow { background:rgba(245,158,11,.13);color:#f59e0b; }
+.chip-blue   { background:rgba(96,165,250,.13);color:#60a5fa; }
+.chip-gray   { background:rgba(148,163,184,.1);color:var(--muted); }
+.chip-purple { background:rgba(192,132,252,.13);color:#c084fc; }
+.tip-actions { display:flex;flex-direction:column;gap:8px;margin-bottom:16px; }
+.tip-do, .tip-dont { display:flex;flex-direction:column;gap:4px; }
+.tip-action-label { font-size:0.7rem;font-weight:700;margin-bottom:2px;opacity:.7; }
+.tip-action-item  { font-size:0.82rem;line-height:1.5;padding-left:4px; }
+.tip-divider  { border:none;border-top:1px solid var(--border);margin:14px 0; }
+.tip-toggle   { font-size:0.75rem;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:4px;background:none;border:none;padding:0; }
+.tip-detail   { margin-top:12px;display:none; }
+.tip-detail.open { display:block; }
+.tip { display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--border); }
+.tip:first-child { padding-top:0; }
+.tip:last-child  { border-bottom:none;padding-bottom:0; }
+.tip-icon { font-size:1rem;flex-shrink:0;padding-top:2px; }
+.tip-body { flex:1; }
+.tip-text { font-size:0.82rem;line-height:1.6; }
+.tip-src  { font-size:0.65rem;color:var(--muted);margin-top:2px; }
 
 /* Birth input */
 .birth-row { text-align: center; margin-top: 24px; }
@@ -459,6 +473,113 @@ function overallScore(bio, num, moon) {
 }
 
 // ── Tips ──────────────────────────────────────────────
+function buildSummary(bio, num, moon, period, ky, koyomi, ovr) {
+  const e = Math.round(bio.emotional*100), p = Math.round(bio.physical*100);
+
+  // ── ヘッドライン ──
+  let headline, subline, headColor='var(--text)';
+  if(koyomi.fujouju) {
+    headline='🚫 不成就日';
+    subline='吉日が全て打ち消される日。重要な決断・新規スタートはNG。';
+    headColor='#ef4444';
+  } else if(ovr>=78) {
+    headline='🔥 全力で動く日！';
+    subline='エネルギーが揃っている。セールス・発信・行動、全部GO。';
+    headColor='#f59e0b';
+  } else if(ovr>=62) {
+    headline='✨ 行動向きの日';
+    subline='流れは良い。積極的に動いてOK。';
+    headColor='#c084fc';
+  } else if(e<=-60) {
+    headline='💧 内省・充電モード';
+    subline='感情エネルギーが内向き。外より内を整える日。';
+    headColor='#60a5fa';
+  } else if(period && period.phase==='menstrual') {
+    headline='🌙 静養・セルフケアの日';
+    subline='生理中。体を一番大切にする時期。';
+    headColor='#94a3b8';
+  } else if(ovr<=38) {
+    headline='🌿 ゆっくり進む日';
+    subline='エネルギーを温存しながら着実に。';
+    headColor='#34d399';
+  } else {
+    headline='☁️ バランスの日';
+    subline='特に強い波はない。丁寧にこなす日。';
+    headColor='var(--muted)';
+  }
+
+  // ── ステータスチップス ──
+  // 体
+  const bodyChip = p>=40
+    ? {label:'体', val:`💪 +${p}%`, cls:'chip-green'}
+    : p<=-40
+    ? {label:'体', val:`🛌 ${p}%`, cls:'chip-red'}
+    : period
+    ? {label:'体', val:`${period.phaseIcon||'🌱'} ${period.phaseName||period.phase}`, cls:'chip-blue'}
+    : {label:'体', val:'普通', cls:'chip-gray'};
+
+  // 心
+  const heartChip = e>=40
+    ? {label:'心', val:`🌈 +${e}%`, cls:'chip-green'}
+    : e<=-40
+    ? {label:'心', val:`🌧️ ${e}%`, cls:'chip-red'}
+    : {label:'心', val:`💙 ${e}%`, cls:'chip-yellow'};
+
+  // 行動・発信
+  let actVal, actCls;
+  if(koyomi.fujouju){ actVal='🚫 NG'; actCls='chip-red'; }
+  else if(koyomi.tenshaDay||koyomi.ichiryuManbai){ actVal='🔥 最高'; actCls='chip-yellow'; }
+  else if(ovr>=65&&e>=-20){ actVal='✅ GO'; actCls='chip-green'; }
+  else if(e<=-60||ovr<=35){ actVal='⚠️ 様子見'; actCls='chip-red'; }
+  else { actVal='👌 普通'; actCls='chip-gray'; }
+  const actChip = {label:'行動・発信', val:actVal, cls:actCls};
+
+  // 開運
+  let openVal, openCls;
+  if(koyomi.fujouju){ openVal='🚫 不成就日'; openCls='chip-red'; }
+  else if(koyomi.tenshaDay){ openVal='🌟 天赦日'; openCls='chip-yellow'; }
+  else if(koyomi.ichiryuManbai&&koyomi.toraNoHi){ openVal='✨ 一粒+寅'; openCls='chip-yellow'; }
+  else if(koyomi.ichiryuManbai){ openVal='✨ 一粒万倍'; openCls='chip-purple'; }
+  else if(koyomi.rokuyo.name==='大安'){ openVal='🎉 大安'; openCls='chip-green'; }
+  else if(koyomi.rokuyo.name==='仏滅'){ openVal='💀 仏滅'; openCls='chip-red'; }
+  else if(koyomi.toraNoHi||koyomi.miNoHi){ openVal:`${koyomi.toraNoHi?'🐯寅':'🐍巳'}の日`; openCls='chip-blue'; openVal=koyomi.toraNoHi?'🐯 寅の日':'🐍 巳の日'; }
+  else if(koyomi.sanrinbou){ openVal='⚠️ 三隣亡'; openCls='chip-red'; }
+  else { openVal=`${koyomi.rokuyo.name}`; openCls='chip-gray'; }
+  const openChip = {label:'開運', val:openVal, cls:openCls};
+
+  // ── DO / DON'T ──
+  const doList=[], dontList=[];
+  // Period
+  if(period) {
+    const phDo = {follicular:'新しいこと・行動・発信',ovulation:'外に出る・セールス・交流',luteal:'まとめ・仕上げ',menstrual:'休養・内省・記録'};
+    const phDont = {follicular:'',ovulation:'',luteal:'感情的な大きな決断',menstrual:'無理な外出・予定詰め込み'};
+    if(phDo[period.phase]) doList.push(phDo[period.phase]);
+    if(phDont[period.phase]) dontList.push(phDont[period.phase]);
+  }
+  // Emotional bio
+  if(e<=-60) dontList.push('感情的な返信・SNSリアクション');
+  if(e>=60) doList.push('発信・言葉で届ける');
+  if(p>=60) doList.push('体を使う仕事・外出');
+  if(p<=-60) dontList.push('無理な体力消費');
+  // 九星
+  if(ky) {
+    const palDo={3:'新しいスタート・行動',4:'ネットワーク・ご縁を広げる',7:'収穫・回収・お礼',9:'発信・SNS・人前に出る',1:'内省・整理・充電',8:'変化を受け入れる準備'};
+    if(palDo[ky.dp]) doList.push(palDo[ky.dp]);
+  }
+  // Koyomi
+  if(koyomi.ichiryuManbai&&!koyomi.fujouju) doList.push('種まき・新しい投資・口座開設');
+  if(koyomi.toraNoHi||koyomi.miNoHi) doList.push('お金の縁を引き寄せる行動');
+  if(koyomi.sanrinbou) dontList.push('建築・大がかりな移動');
+  if(koyomi.rokuyo.name==='仏滅') dontList.push('大切なことを始める');
+  // Personal day
+  const numDo={1:'決断・スタート・独立行動',3:'発信・創作・表現',5:'変化への対応',8:'お金まわり・交渉',9:'仕上げ・手放す'};
+  if(numDo[num?.day]) doList.push(numDo[num.day]);
+
+  // Dedupe & limit
+  const uniq = arr => [...new Set(arr)].slice(0,3);
+  return { headline, subline, headColor, chips:[bodyChip,heartChip,actChip,openChip], doList:uniq(doList), dontList:uniq(dontList) };
+}
+
 function buildTips(bio, num, moon, pillar, period, ky) {
   const tips = [];
   const isCrit = v => Math.abs(v) < 0.15;
@@ -724,8 +845,18 @@ function render() {
   renderWeek(birth, today);
 
   // Tips
+  const koyomi = calcKoyomi(target);
+  const summary = buildSummary(bio, num, moon, period, ky, koyomi, ovr);
   const tips = buildTips(bio, num, moon, pillar, period, ky);
-  document.getElementById('tips').innerHTML = tips.map(t =>
+  const chipsHtml = summary.chips.map(c =>
+    `<div class="tip-chip ${c.cls}">
+      <span class="tip-chip-label">${c.label}</span>
+      <span class="tip-chip-val">${c.val}</span>
+    </div>`
+  ).join('');
+  const doHtml = summary.doList.map(d=>`<div class="tip-action-item">✅ ${d}</div>`).join('');
+  const dontHtml = summary.dontList.map(d=>`<div class="tip-action-item">⛔ ${d}</div>`).join('');
+  const detailHtml = tips.map(t =>
     `<div class="tip">
       <div class="tip-icon">${t.icon}</div>
       <div class="tip-body">
@@ -734,6 +865,19 @@ function render() {
       </div>
     </div>`
   ).join('');
+  document.getElementById('tips').innerHTML = `
+    <div class="tip-headline" style="color:${summary.headColor}">${summary.headline}</div>
+    <div class="tip-subline">${summary.subline}</div>
+    <div class="tip-chips">${chipsHtml}</div>
+    ${(doHtml||dontHtml)?`
+    <div class="tip-actions">
+      ${doHtml?`<div class="tip-do"><div class="tip-action-label">今日やること</div>${doHtml}</div>`:''}
+      ${dontHtml?`<div class="tip-dont"><div class="tip-action-label">今日避けること</div>${dontHtml}</div>`:''}
+    </div>`:''}
+    <hr class="tip-divider">
+    <button class="tip-toggle" onclick="this.nextElementSibling.classList.toggle('open');this.textContent=this.nextElementSibling.classList.contains('open')?'▲ 詳細を閉じる':'▼ 詳細を見る'">▼ 詳細を見る</button>
+    <div class="tip-detail">${detailHtml}</div>
+  `;
 }
 
 // ── Koyomi (暦注) ─────────────────────────────────────
