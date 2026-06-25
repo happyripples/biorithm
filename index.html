@@ -783,19 +783,19 @@ function render() {
   document.getElementById('cards').innerHTML = `
     ${periodCardHtml}
     <div class="card">
+      <div class="card-icon">${moon.icon}</div>
+      <div class="card-label">月相</div>
+      <div class="card-value">${moon.name}</div>
+      <div class="card-sub">${moon.energy}</div>
+      <div class="card-sub" style="margin-top:6px">月齢 ${moon.age.toFixed(1)} 日</div>
+    </div>
+    <div class="card">
       <div class="card-icon">🔢</div>
       <div class="card-label">数秘術 パーソナルデイ</div>
       <div class="card-value">${nm.icon} ${num.day}</div>
       <div class="card-sub">${nm.name}</div>
       <div class="card-sub" style="margin-top:8px;font-size:0.82rem;line-height:1.6;color:var(--text);border-top:1px solid var(--border);padding-top:8px">${nm.tip}</div>
       <div class="card-sub" style="margin-top:6px">年数 ${num.year} ／ 月数 ${num.month}</div>
-    </div>
-    <div class="card">
-      <div class="card-icon">${moon.icon}</div>
-      <div class="card-label">月相</div>
-      <div class="card-value">${moon.name}</div>
-      <div class="card-sub">${moon.energy}</div>
-      <div class="card-sub" style="margin-top:6px">月齢 ${moon.age.toFixed(1)} 日</div>
     </div>
     <div class="card">
       <div class="card-icon">☯️</div>
