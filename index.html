@@ -1907,12 +1907,55 @@ function jumpToDate(dateStr) {
   const pad = n => String(n).padStart(2,'0');
   const todayStr = `${today.getFullYear()}-${pad(today.getMonth()+1)}-${pad(today.getDate())}`;
 
+  // URLパラメータ ?b=YYYYMMDD から生年月日を読む
+  const params = new URLSearchParams(window.location.search);
+  const bParam = params.get('b');
+  let birthVal = '';
+  if (bParam && /^\d{8}$/.test(bParam)) {
+    // YYYYMMDD → YYYY-MM-DD
+    birthVal = `${bParam.slice(0,4)}-${bParam.slice(4,6)}-${bParam.slice(6,8)}`;
+    localStorage.setItem('dashBirth', birthVal);
+  } else {
+    // localStorageから復元（前回保存分）
+    birthVal = localStorage.getItem('dashBirth') || '';
+  }
+
   document.getElementById('targetDate').value  = todayStr;
-  document.getElementById('birthDate').value   = '1981-07-29';
+  document.getElementById('birthDate').value   = birthVal;
   document.getElementById('periodAddDate').value = todayStr;
 
+  // 生年月日が未設定なら入力を促すバナーを表示
+  if (!birthVal) {
+    const banner = document.createElement('div');
+    banner.id = 'birthBanner';
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:999;background:var(--card);border-bottom:2px solid var(--accent);padding:20px 24px;text-align:center;';
+    banner.innerHTML = `
+      <div style="font-size:1.1rem;font-weight:700;margin-bottom:12px">🎁 あなた専用のダッシュボードを設定しましょう</div>
+      <div style="font-size:0.85rem;color:var(--muted);margin-bottom:16px">生年月日を入力すると、バイオリズム・九星気学・数秘術が自動計算されます</div>
+      <div style="display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;">
+        <input type="date" id="bannerBirth" style="padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:0.95rem;">
+        <button onclick="
+          const v = document.getElementById('bannerBirth').value;
+          if(!v){return;}
+          localStorage.setItem('dashBirth', v);
+          document.getElementById('birthDate').value = v;
+          document.getElementById('birthBanner').remove();
+          render();
+          renderCalendar(calYear, calMonth);
+        " style="padding:8px 20px;border-radius:8px;background:var(--accent);color:#000;font-weight:700;border:none;cursor:pointer;font-size:0.95rem;">設定する</button>
+      </div>
+    `;
+    document.body.prepend(banner);
+  }
+
   ['targetDate','birthDate'].forEach(id =>
-    document.getElementById(id).addEventListener('change', render)
+    document.getElementById(id).addEventListener('change', () => {
+      if (id === 'birthDate') {
+        const v = document.getElementById('birthDate').value;
+        if (v) localStorage.setItem('dashBirth', v);
+      }
+      render();
+    })
   );
 
   renderPeriodHistory();
