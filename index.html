@@ -492,7 +492,7 @@ function buildSummary(bio, num, moon, period, ky, koyomi, ovr) {
     headline='💧 内省・充電モード';
     subline='感情エネルギーが内向き。外より内を整える日。';
     headColor='#60a5fa';
-  } else if(period && period.phase==='menstrual') {
+  } else if(period && isYayaMode && period.phase==='menstrual') {
     headline='🌙 静養・セルフケアの日';
     subline='生理中。体を一番大切にする時期。';
     headColor='#94a3b8';
@@ -512,7 +512,7 @@ function buildSummary(bio, num, moon, period, ky, koyomi, ovr) {
     ? {label:'体', val:`💪 +${p}%`, cls:'chip-green'}
     : p<=-40
     ? {label:'体', val:`🛌 ${p}%`, cls:'chip-red'}
-    : period
+    : (period && isYayaMode)
     ? {label:'体', val:`${period.phaseIcon||'🌱'} ${period.phaseName||period.phase}`, cls:'chip-blue'}
     : {label:'体', val:'普通', cls:'chip-gray'};
 
@@ -612,7 +612,7 @@ function buildTips(bio, num, moon, pillar, period, ky) {
   tips.push({icon:'☯️', text:`今日の日柱は【${pillar.pillar}】。${pillar.sElem}${pillar.polar}のエネルギー。${pillar.tip}`, src:'四柱推命（日柱）'});
 
   // Period tip
-  if (period) {
+  if (period && isYayaMode) {
     tips.push({icon: period.phaseIcon, text: `${period.phase}（周期${period.dayInCycle}日目）。${period.tip} 次の生理まであと${period.daysToNext}日。`, src:'生理周期'});
     if (period.dayInCycle <= period.periodDays && bio.emotional < -0.2)
       tips.push({icon:'💙', text:'生理期間×感情低調が重なってる。しんどくて当然です。体が一番えらい時期。予定を詰めず、休むことを選んで。', src:'複合分析（生理×バイオリズム）'});
