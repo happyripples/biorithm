@@ -484,7 +484,7 @@ function buildSummary(bio, num, moon, period, ky, koyomi, ovr) {
     headColor='#ef4444';
   } else if(ovr>=78) {
     headline='🔥 全力で動く日！';
-    subline='エネルギーが揃っている。セールス・発信・行動、全部GO。';
+    subline='エネルギーが揃っている。チャンスを活かす・外に出る・行動、全部GO。';
     headColor='#f59e0b';
   } else if(ovr>=62) {
     headline='✨ 行動向きの日';
@@ -551,7 +551,7 @@ function buildSummary(bio, num, moon, period, ky, koyomi, ovr) {
   const doList=[], dontList=[];
   // Period
   if(period) {
-    const phDo = {follicular:'新しいこと・行動・発信',ovulation:'外に出る・セールス・交流',luteal:'まとめ・仕上げ',menstrual:'休養・内省・記録'};
+    const phDo = {follicular:'新しいこと・行動・チャレンジ',ovulation:'外に出る・人と会う・交流',luteal:'まとめ・仕上げ',menstrual:'休養・内省・記録'};
     const phDont = {follicular:'',ovulation:'',luteal:'感情的な大きな決断',menstrual:'無理な外出・予定詰め込み'};
     if(phDo[period.phase]) doList.push(phDo[period.phase]);
     if(phDont[period.phase]) dontList.push(phDont[period.phase]);
@@ -619,7 +619,7 @@ function buildTips(bio, num, moon, pillar, period, ky) {
     if (period.dayInCycle <= period.periodDays && bio.emotional < -0.2)
       tips.push({icon:'💙', text:'生理期間×感情低調が重なってる。しんどくて当然です。体が一番えらい時期。予定を詰めず、休むことを選んで。', src:'複合分析（生理×バイオリズム）'});
     if (period.phase === '排卵期' && bio.emotional > 0.3)
-      tips.push({icon:'🚀', text:'排卵期×感情高め！今週は発信・人に会う・セールスに動く最大チャンス。このエネルギー、使い切って。', src:'複合分析（生理×バイオリズム）'});
+      tips.push({icon:'🚀', text:'排卵期×感情高め！今週は外に出る・人に会う・チャンスを掴む最大のタイミング。このエネルギー、使い切って。', src:'複合分析（生理×バイオリズム）'});
   }
 
   // Combined
@@ -1564,7 +1564,7 @@ function calcDayScore(date, birth, periodDates) {
 
   const acts=[];
   if(!isNG&&score>=60) {
-    if(pd&&pd.phase==='排卵期'&&bio.emotional>0.1) acts.push('💬セールス');
+    if(pd&&pd.phase==='排卵期'&&bio.emotional>0.1) acts.push('🚀チャンス日');
     if(ko.ichiryuManbai||ko.tenshaDay) acts.push('🚀新規スタート');
     if(bio.emotional>0.35) acts.push('📣発信');
     if(bio.intellectual>0.35) acts.push('✍️創作');
@@ -1631,7 +1631,7 @@ function renderBestDays(year, month, birth, pDates) {
       onclick="jumpToDate('${year}-${pad(month)}-${pad(x.d)}')">${label}</span>`;
 
   let html=`<div class="bestday-section">
-    <div class="bestday-label">💬 セールス・発信に動くなら（スコア高い順）</div>
+    <div class="bestday-label">🚀 チャンスを活かすなら（スコア高い順）</div>
     <div class="bestday-chips">${top.map(x=>chip(x,x.ds.color,`${month}/${x.d} ${x.ds.emoji}${x.ds.score}点`)).join('')}</div>
   </div>`;
 
@@ -1822,7 +1822,7 @@ function menstrualPhase(periodStartStr, cycleLength, targetDate) {
     tip = 'エネルギーが上昇中！新しいこと・行動・発信に向いてる。';
   } else if (dayInCycle <= ovulationDay + 2) {
     phase = '排卵期'; phaseIcon = '✨'; phaseColor = '#fbbf24';
-    tip = 'コミュ力・発信力が最大値！人に会う・SNS投稿・セールスに最高の時期。';
+    tip = 'コミュ力・表現力が最大値！人に会う・外に出る・チャンスを掴むのに最高の時期。';
   } else if (dayInCycle <= cycleLength - 7) {
     phase = '黄体期（前半）'; phaseIcon = '🌕'; phaseColor = '#c084fc';
     tip = '安定して内側が充実してる時期。深い仕事・創作に向いてる。';
