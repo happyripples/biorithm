@@ -832,21 +832,23 @@ function render() {
         <div style="font-size:0.68rem;color:var(--muted);padding-left:4px">${PALACE_ENERGY[ky.dp]}</div>
       </div>
     </div>
-    <div class="card" style="border-color:#c084fc44">
-      <div class="card-icon">🔮</div>
-      <div class="card-label">サビアンシンボル</div>
-      <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
-        <div>
-          <div style="font-size:0.65rem;font-weight:700;color:#f59e0b;letter-spacing:.05em;margin-bottom:3px">☀️ 太陽 ${sabian.sun.sign}座 ${sabian.sun.deg}°</div>
-          <div style="font-size:0.75rem;color:var(--muted);font-style:italic;margin-bottom:4px">"${sabian.sun.en}"</div>
-          <div style="font-size:0.82rem;font-weight:600;line-height:1.5;margin-bottom:4px">${sabian.sun.jp}</div>
-          <div style="font-size:0.78rem;color:#f59e0b;line-height:1.5">${sabian.sun.msg}</div>
+    <div class="card sabian-wide" style="border-color:#c084fc44;grid-column:1/-1">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:14px">
+        <span style="font-size:1.3rem">🔮</span>
+        <span style="font-size:0.7rem;font-weight:700;letter-spacing:.08em;color:var(--muted);text-transform:uppercase">サビアンシンボル</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div style="background:var(--surface);border-radius:12px;padding:12px">
+          <div style="font-size:0.65rem;font-weight:700;color:#f59e0b;letter-spacing:.05em;margin-bottom:6px">☀️ 太陽 ${sabian.sun.sign}座 ${sabian.sun.deg}°</div>
+          <div style="font-size:0.75rem;color:var(--muted);font-style:italic;margin-bottom:6px">"${sabian.sun.en}"</div>
+          <div style="font-size:0.88rem;font-weight:700;line-height:1.5;margin-bottom:8px">${sabian.sun.jp}</div>
+          <div style="font-size:0.78rem;color:#b8943f;line-height:1.7;border-top:1px solid var(--border);padding-top:8px">${sabian.sun.msg}</div>
         </div>
-        <div style="border-top:1px solid var(--border);padding-top:10px">
-          <div style="font-size:0.65rem;font-weight:700;color:#60a5fa;letter-spacing:.05em;margin-bottom:3px">🌙 月 ${sabian.moon.sign}座 ${sabian.moon.deg}°</div>
-          <div style="font-size:0.75rem;color:var(--muted);font-style:italic;margin-bottom:4px">"${sabian.moon.en}"</div>
-          <div style="font-size:0.82rem;font-weight:600;line-height:1.5;margin-bottom:4px">${sabian.moon.jp}</div>
-          <div style="font-size:0.78rem;color:#60a5fa;line-height:1.5">${sabian.moon.msg}</div>
+        <div style="background:var(--surface);border-radius:12px;padding:12px">
+          <div style="font-size:0.65rem;font-weight:700;color:#60a5fa;letter-spacing:.05em;margin-bottom:6px">🌙 月 ${sabian.moon.sign}座 ${sabian.moon.deg}°</div>
+          <div style="font-size:0.75rem;color:var(--muted);font-style:italic;margin-bottom:6px">"${sabian.moon.en}"</div>
+          <div style="font-size:0.88rem;font-weight:700;line-height:1.5;margin-bottom:8px">${sabian.moon.jp}</div>
+          <div style="font-size:0.78rem;color:#60a5fa;line-height:1.7;border-top:1px solid var(--border);padding-top:8px">${sabian.moon.msg}</div>
         </div>
       </div>
     </div>
