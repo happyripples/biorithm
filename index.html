@@ -492,7 +492,7 @@ function overallScore(bio, num, moon) {
 }
 
 // ── Tips ──────────────────────────────────────────────
-function buildSummary(bio, num, moon, period, ky, koyomi, ovr) {
+function buildSummary(bio, num, moon, period, ky, koyomi, ovr, isYayaMode) {
   const e = Math.round(bio.emotional*100), p = Math.round(bio.physical*100);
 
   // ── ヘッドライン ──
@@ -911,7 +911,7 @@ function render() {
 
   // Tips
   const koyomi = calcKoyomi(target);
-  const summary = buildSummary(bio, num, moon, period, ky, koyomi, ovr);
+  const summary = buildSummary(bio, num, moon, period, ky, koyomi, ovr, isYayaMode);
   const tips = buildTips(bio, num, moon, pillar, period, ky, isYayaMode);
   const chipsHtml = summary.chips.map(c =>
     `<div class="tip-chip ${c.cls}">
