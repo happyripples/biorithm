@@ -730,9 +730,24 @@ function drawChart(canvas, birth, target) {
 }
 
 // ── Render ────────────────────────────────────────────
+function getBirthVal() {
+  // hidden inputを優先、なければ分割入力から組み立て、なければlocalStorage
+  const h = document.getElementById('birthDate').value;
+  if (h) return h;
+  const y = (document.getElementById('birthY')||{}).value;
+  const m = (document.getElementById('birthM')||{}).value;
+  const d = (document.getElementById('birthD')||{}).value;
+  if (y && m && d) {
+    const v = y.padStart(4,'0')+'-'+m.padStart(2,'0')+'-'+d.padStart(2,'0');
+    document.getElementById('birthDate').value = v;
+    return v;
+  }
+  return localStorage.getItem('dashBirth') || '';
+}
+
 function render() {
   const tVal = document.getElementById('targetDate').value;
-  const bVal = document.getElementById('birthDate').value;
+  const bVal = getBirthVal();
   if (!tVal || !bVal) return;
 
   const target = new Date(tVal + 'T12:00:00');
