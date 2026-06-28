@@ -1550,21 +1550,35 @@ function calcKyusei(date) {
   const mp = palaceOf(HONMEISEI, mc);
   const dp = palaceOf(HONMEISEI, dc);
 
-  // 吉方位計算（日盤ベース）
-  const gokoPalace      = palaceOf(5, dc);           // 五黄殺の宮
-  const ankenPalace     = PALACE_OPP[gokoPalace];    // 暗剣殺（五黄の反対）
-  const honmeiSatsu     = dp;                        // 本命殺（自分の星の宮）
-  const honmeiTekiSatsu = PALACE_OPP[dp];            // 本命的殺（その反対）
-  const kyoPalaces = new Set([gokoPalace, ankenPalace, honmeiSatsu, honmeiTekiSatsu, 5]);
-  const kihouPalaces = [1,2,3,4,6,7,8,9].filter(p => !kyoPalaces.has(p));
+  // 三盤の凶方位を計算して一致する吉方位を出す
+  function kyoSet(center) {
+    const gokoP  = palaceOf(5, center);
+    const ankenP = PALACE_OPP[gokoP];
+    const hmP    = palaceOf(HONMEISEI, center);
+    const hmtP   = PALACE_OPP[hmP];
+    return new Set([gokoP, ankenP, hmP, hmtP, 5].filter(p => p));
+  }
+  const kyoY = kyoSet(yc);
+  const kyoM = kyoSet(mc);
+  const kyoD = kyoSet(dc);
+  const allKyo = new Set([...kyoY, ...kyoM, ...kyoD]);
+  const kihouPalaces = [1,2,3,4,6,7,8,9].filter(p => !allKyo.has(p));
 
+  // 凶方位リスト（日盤ベース、理由付き）
   const kyoList = [];
-  if (gokoPalace !== 5) kyoList.push({ label:'五黄殺', dir: PALACE_DIR[gokoPalace] });
-  if (ankenPalace && ankenPalace !== 5) kyoList.push({ label:'暗剣殺', dir: PALACE_DIR[ankenPalace] });
-  if (honmeiSatsu !== 5 && honmeiSatsu !== gokoPalace && honmeiSatsu !== ankenPalace)
-    kyoList.push({ label:'本命殺', dir: PALACE_DIR[honmeiSatsu] });
-  if (honmeiTekiSatsu && honmeiTekiSatsu !== 5 && !kyoList.find(k=>k.dir===PALACE_DIR[honmeiTekiSatsu]))
-    kyoList.push({ label:'本命的殺', dir: PALACE_DIR[honmeiTekiSatsu] });
+  const addKyo = (p, label) => {
+    if (p && p !== 5 && !kyoList.find(k => k.dir === PALACE_DIR[p]))
+      kyoList.push({ label, dir: PALACE_DIR[p] });
+  };
+  const gD = palaceOf(5, dc), hmD = palaceOf(HONMEISEI, dc);
+  addKyo(gD, '五黄殺（日）'); addKyo(PALACE_OPP[gD], '暗剣殺（日）');
+  addKyo(hmD, '本命殺（日）'); addKyo(PALACE_OPP[hmD], '本命的殺（日）');
+  const gM = palaceOf(5, mc), hmM = palaceOf(HONMEISEI, mc);
+  addKyo(gM, '五黄殺（月）'); addKyo(PALACE_OPP[gM], '暗剣殺（月）');
+  addKyo(hmM, '本命殺（月）'); addKyo(PALACE_OPP[hmM], '本命的殺（月）');
+  const gY = palaceOf(5, yc), hmY = palaceOf(HONMEISEI, yc);
+  addKyo(gY, '五黄殺（年）'); addKyo(PALACE_OPP[gY], '暗剣殺（年）');
+  addKyo(hmY, '本命殺（年）'); addKyo(PALACE_OPP[hmY], '本命的殺（年）');
 
   return { yc, mc, dc, yp, mp, dp,
     dayBonus: PALACE_SCORE[dp],
