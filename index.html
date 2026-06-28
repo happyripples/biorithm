@@ -763,9 +763,9 @@ function render() {
   const period = periodStartStr ? menstrualPhase(periodStartStr, cycleLen, target) : null;
 
   // Overall
-  document.getElementById('overallEmoji').textContent = ovr.emoji;
-  document.getElementById('overallScore').textContent = ovr.score + '点';
-  document.getElementById('overallDesc').textContent  = ovr.desc;
+  const _oe = document.getElementById('overallEmoji'); if(_oe) _oe.textContent = ovr.emoji;
+  const _os = document.getElementById('overallScore'); if(_os) _os.textContent = ovr.score + '点';
+  const _od = document.getElementById('overallDesc');  if(_od) _od.textContent = ovr.desc;
 
   // Chart
   const canvas = document.getElementById('bioCanvas');
