@@ -596,7 +596,7 @@ function buildSummary(bio, num, moon, period, ky, koyomi, ovr) {
 
   // Dedupe & limit
   const uniq = arr => [...new Set(arr)].slice(0,3);
-  return { headline, subline, headColor, chips:[bodyChip,heartChip,actChip,openChip], doList:uniq(doList), dontList:uniq(dontList) };
+  return { headline, subline, headColor, chips:[actChip,openChip], doList:uniq(doList), dontList:uniq(dontList) };
 }
 
 function buildTips(bio, num, moon, pillar, period, ky, isYayaMode) {
