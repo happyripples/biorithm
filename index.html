@@ -801,6 +801,15 @@ function render() {
       <div class="phase-bar"><div class="phase-bar-fill" style="width:${period.phasePct}%;background:${period.phaseColor}"></div></div>
     </div>` : '';
 
+  // 吉方位HTML（ネスト問題を避けるため先に組み立て）
+  const kihouHtml = ky.kihou.length
+    ? ky.kihou.map(d => '<span style="background:rgba(52,211,153,.15);color:#34d399;border-radius:6px;padding:3px 10px;font-size:0.82rem;font-weight:700">' + d + '</span>').join('')
+    : '<span style="font-size:0.78rem;color:var(--muted)">本日は吉方位なし</span>';
+  const kyoHtml = ky.kyo.map(k =>
+    '<div style="font-size:0.78rem"><span style="color:#ef4444;font-weight:700">' + k.dir + '</span>'
+    + '<span style="color:var(--muted);font-size:0.7rem;margin-left:6px">' + k.label + '</span></div>'
+  ).join('');
+
   document.getElementById('cards').innerHTML = `
     ${periodCardHtml}
     <div class="card">
@@ -862,13 +871,13 @@ function render() {
         <div style="background:var(--surface);border-radius:10px;padding:10px">
           <div style="font-size:0.65rem;font-weight:700;color:#34d399;letter-spacing:.05em;margin-bottom:8px">✅ 吉方位</div>
           <div style="display:flex;flex-wrap:wrap;gap:6px">
-            ${ky.kihou.length ? ky.kihou.map(d=>`<span style="background:rgba(52,211,153,.15);color:#34d399;border-radius:6px;padding:3px 10px;font-size:0.82rem;font-weight:700">${d}</span>`).join('') : '<span style="font-size:0.78rem;color:var(--muted)">本日は吉方位なし</span>'}
+            ${kihouHtml}
           </div>
         </div>
         <div style="background:var(--surface);border-radius:10px;padding:10px">
           <div style="font-size:0.65rem;font-weight:700;color:#ef4444;letter-spacing:.05em;margin-bottom:8px">⛔ 避ける方角</div>
           <div style="display:flex;flex-direction:column;gap:4px">
-            ${ky.kyo.map(k=>`<div style="font-size:0.78rem"><span style="color:#ef4444;font-weight:700">${k.dir}</span><span style="color:var(--muted);font-size:0.7rem;margin-left:6px">${k.label}</span></div>`).join('')}
+            ${kyoHtml}
           </div>
         </div>
       </div>
